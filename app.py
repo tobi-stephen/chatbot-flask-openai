@@ -8,7 +8,7 @@ subjects = ["World", "Politics", "General", "Food", "Family"]
 
 
 @app.get('/health')
-def welcome():
+def health():
     return jsonify({'status': 'success', 'msg': 'all is well!'})
 
 @app.get('/')
