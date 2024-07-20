@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Zen AI</title>
+
+        <style>
+            #chat {
+                width: 400px;
+                height: auto;
+                border: 1px solid #555;
+                overflow-y: scroll;
+                padding: 15px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>Zen AI Assistant</h1>
+        <div id="context"></div>
+        <input type="text" id="subject" placeholder="Subject"/>
+        <input type="text" id="source" placeholder="url or file..."/>
+        <input type="text" id="resource" placeholder="Resource"/>
+        <button onclick="set_context()" id="set-ctx-btn">Set Context</button>
+        <br/>
+        <br/>
+        <div id="chat"></div>
+        <input type="text" id="question" placeholder="Type your question"/>
+        <button onclick="query_assistant()" id="set-ctx-btn">Ask Question</button>
+        <script>
+
+            function set_context()
+            {
+                console.log("Setting Context...");
+                const ctx_elem = document.getElementById("context");
+                const ctx_subject = document.getElementById("subject").value.trim();
+                const ctx_source = document.getElementById("source").value.trim();
+                const ctx_resource = document.getElementById("resource").value.trim();
+                
+                // query context API
+                console.log(ctx_subject);
+                let json_req = {
+                    "subject": ctx_subject,
+                    "source": ctx_source,
+                    "resource": ctx_resource
+                };
+
+                let req = {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(json_req)
+                };
+                fetch("/context", req)
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data)
+                    ctx_elem.textContent = `${data['status']}: ${data['msg']}`;
+                })
+                .catch((error) => {
+                    console.error(`Error: ${error}`);
+                });
+            }
+
+            function query_assistant()
+            {
+                console.log("Asking ZEN AI");
+                const chat_elem = document.getElementById("chat");
+                const question_elem = document.getElementById("question");
+                const question = question_elem.value.trim();
+                
+                // append user's question
+                console.log(question);
+                const user_msg_elem = document.createElement("div");
+                user_msg_elem.textContent = `PERSON: ${question}`;
+                chat_elem.appendChild(user_msg_elem);
+                chat_elem.scrollTop = chat_elem.scrollHeight;
+
+                // query assistant API
+                let req = {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({"question": question})
+                };
+                fetch("/assistant", req)
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data)
+                    
+                    // append zen's response if success
+                    const zen_msg_elem = document.createElement("div");
+                    if (data['status'] == 'success')
+                    {
+                        zen_msg_elem.textContent = `ZEN: ${data['msg']['response']}`;
+                        zen_msg_elem.style.color = "magenta";
+                    }
+                    else 
+                    {   alert("Assistant unavailable!");
+                        return;
+                    }
+                    
+                    chat_elem.appendChild(zen_msg_elem);
+                    chat_elem.scrollTop = chat_elem.scrollHeight;
+                })
+                .catch((error) => {
+                    console.error(`Error: ${error}`);
+                });
+                
+                question_elem.value = "";
+
+            }
+
+
+        </script>
+    </body>
+</html>

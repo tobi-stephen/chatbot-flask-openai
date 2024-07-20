@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from utils import Chain
 
 
@@ -7,9 +7,10 @@ chain = None  # To be set in the `set_context` api
 subjects = ["World", "Politics", "General", "Food", "Family"]
 
 
+@app.get('/')
 @app.get('/welcome')
 def welcome():
-    return jsonify({'msg': 'welcome'})
+    return render_template('index.html')
 
 
 @app.post('/context')
@@ -22,11 +23,11 @@ def set_context():
     source = data.get('source')
     resource = data.get('resource')
     if not subject:
-        return jsonify({'msg': 'provide a subject matter'}), 400
+        return jsonify({'status': 'failure', 'msg': 'provide a subject matter'}), 400
     
     chain = Chain(subject, source, resource)
 
-    return jsonify({'msg': 'context added'})
+    return jsonify({'status': 'success', 'msg': 'context added'})
 
 
 @app.post('/assistant')
@@ -42,20 +43,20 @@ def chat_assistant():
 
     # we expect `question` field
     if not data.get('question'):
-        return jsonify({'msg': 'provide a question'}), 400
+        return jsonify({'status': 'failure', 'msg': 'provide a question'}), 400
     
     question = data.get('question')
     response = chain.invoke(question)
 
-    return jsonify({'msg': 'success', 'data': {'question': question, 'response': response}, 'warning': warning})
+    return jsonify({'status': 'success', 'msg': {'question': question, 'response': response}, 'warning': warning})
 
 
 @app.errorhandler(Exception)
 def error_handler(e: Exception):
     if isinstance(e, ValueError):
-        return jsonify({'msg': str(e)})
+        return jsonify({'status': 'failure', 'msg': str(e)})
     
-    return jsonify({'msg': f'server error: {str(e)}'})
+    return jsonify({'status': 'failure', 'msg': f'server error: {str(e)}'})
     
 
 if __name__ == '__main__':
