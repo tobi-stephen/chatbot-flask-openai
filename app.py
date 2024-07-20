@@ -7,6 +7,10 @@ chain = None  # To be set in the `set_context` api
 subjects = ["World", "Politics", "General", "Food", "Family"]
 
 
+@app.get('/health')
+def welcome():
+    return jsonify({'status': 'success', 'msg': 'all is well!'})
+
 @app.get('/')
 @app.get('/welcome')
 def welcome():
