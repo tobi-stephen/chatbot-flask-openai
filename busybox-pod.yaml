@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox
+  namespace: bot
+spec:
+  containers:
+  - args:
+    - sleep
+    - "3600"
+    image: busybox
+    name: busybox

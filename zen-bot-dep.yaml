@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: zenbot
+  name: zenbot
+  namespace: bot
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: zenbot
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: zenbot
+    spec:
+      containers:
+      - image: zenbot
+        imagePullPolicy: Never
+        name: zenbot
+        ports:
+        - containerPort: 5000
+        resources: {}
+status: {}
