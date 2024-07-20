@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: zenbot
+  name: zenbot
+spec:
+  containers:
+  - env:
+    - name: OPENAI_API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: zenbot-secret
+          key: openai-api-key
+    image: zenbot
+    imagePullPolicy: IfNotPresent
+    name: zenbot
+    ports:
+    - containerPort: 5000
+      protocol: TCP
+    resources: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: zenbot-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: zenbot
+  ports:
+  - port: 80
+    targetPort: 5000
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: zenbot-ingress
+  namespace: default
+spec:
+  rules:
+  - host: zenbot.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: zenbot-svc
+            port: 
+              number: 80

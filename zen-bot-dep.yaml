@@ -23,4 +23,10 @@ spec:
         ports:
         - containerPort: 5000
         resources: {}
+        env:
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: zenbot-secret
+              key: openai-api-key
 status: {}

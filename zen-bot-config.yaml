@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: zenbot-secret
+type: Opaque
+data:
+  openai-api-key: <base64 encoded key>
