@@ -58,9 +58,9 @@ def chat_assistant():
 @app.errorhandler(Exception)
 def error_handler(e: Exception):
     if isinstance(e, ValueError):
-        return jsonify({'status': 'failure', 'msg': str(e)})
+        return jsonify({'status': 'failure', 'msg': str(e)}), 400
     
-    return jsonify({'status': 'failure', 'msg': f'server error: {str(e)}'})
+    return jsonify({'status': 'failure', 'msg': f'server error: {str(e)}'}), 400
     
 
 if __name__ == '__main__':
