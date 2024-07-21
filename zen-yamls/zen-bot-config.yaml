@@ -4,4 +4,4 @@ metadata:
   name: zenbot-secret
 type: Opaque
 data:
-  openai-api-key: <base64 encoded key>
+  openai-api-key: <base64 openapi-key here>

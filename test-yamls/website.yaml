@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: website
+data:
+  index.html: |-
+    <!DOCTYPE html>
+    <head>
+        <title>ZEN</title>
+    </head>
+    <body>
+        <h1>ZEN INDEX</h1>
+        <div>WHAT IS GOING ON...</div>
+    </body>
